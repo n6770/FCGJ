@@ -104,6 +104,11 @@ public class PlayerScript : MonoBehaviour
 
             }
         }
+        
+        if (!movement && !dodged && gravity)    //to stop with gravity enabled without movement after dodge
+        {
+            rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, 0.3f); //stop speed
+        }
 
         //dodge
         if (dodged)
@@ -117,6 +122,7 @@ public class PlayerScript : MonoBehaviour
             }
         }
         
+
         if (dodgeCooldownTime != 0)
         {
             --dodgeCooldownTime;

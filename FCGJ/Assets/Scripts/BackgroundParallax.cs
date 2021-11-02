@@ -6,6 +6,7 @@ public class BackgroundParallax : MonoBehaviour
 {
     public GameObject player;
     public Rigidbody2D rbPlayer;
+    public ParticleSystem.VelocityOverLifetimeModule ps;
     public float horSpeed;
     public float verSpeed;
     public float speedMultiplier;
@@ -15,6 +16,7 @@ public class BackgroundParallax : MonoBehaviour
     void Start()
     {
         rbPlayer = player.GetComponent<Rigidbody2D>();
+        ps = GetComponentInChildren<ParticleSystem>().velocityOverLifetime;
     }
 
     // Update is called once per frame
@@ -22,6 +24,10 @@ public class BackgroundParallax : MonoBehaviour
     {
         horSpeed = rbPlayer.velocity.x * speedMultiplier;
         verSpeed = rbPlayer.velocity.y * speedMultiplier;
-        transform.Translate(new Vector3(-horSpeed, -verSpeed, 0f));
+
+        ps.xMultiplier = -horSpeed;
+        ps.yMultiplier = -verSpeed;
+
+        transform.position = player.transform.position;
     }
 }
