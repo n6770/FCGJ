@@ -5,8 +5,8 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
     //player variables
-    public float healthAmount;
-    public float armorAmount;
+    public int health;
+    public float armor;
     public float invincibleTime; //time to ignore damage after hit
     public float movementSpeed;
     public float hor, ver;
@@ -20,7 +20,7 @@ public class PlayerScript : MonoBehaviour
     public bool movement = true;
     public bool dodge = true;
     public bool shooting = true;
-    public bool armor = true;
+    public bool armored = true;
 
     //dodge variables
     public bool dodged = false;
@@ -35,6 +35,8 @@ public class PlayerScript : MonoBehaviour
     public float knockbackForce;
     public float maxSpeed;
     public Vector3 knockBackPos;
+    public bool enemyKnockback = false;
+    public int enemyKnockbackFrames;
 
     
     void Start()
@@ -92,7 +94,7 @@ public class PlayerScript : MonoBehaviour
 
 
         //movement
-        if (movement && !dodged)
+        if ((movement && !dodged && !enemyKnockback))
         {
             if (gravity)
             {
@@ -133,6 +135,18 @@ public class PlayerScript : MonoBehaviour
         {
             rb.AddForce((transform.position - knockBackPos) * knockbackForce, ForceMode2D.Impulse);
             knockbackTriggered = false;
+        }
+
+        if (enemyKnockback)
+        {
+            
+            --enemyKnockbackFrames;
+            rb.AddForce((transform.position - knockBackPos) * knockbackForce, ForceMode2D.Impulse);
+
+            if (enemyKnockbackFrames == 0)
+            {
+                enemyKnockback = false;
+            }
         }
     }
 }

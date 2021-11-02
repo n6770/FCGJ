@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DebugScript : MonoBehaviour
 {
-    public PlayerScript playerScript;
+     public PlayerScript playerScript;
     
     // Start is called before the first frame update
     void Start()

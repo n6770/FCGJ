@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    public GameObject explosion;
+    public GameObject explosionSpawn;
     public float speed;
     public float knockback;
     public Rigidbody2D rb;
@@ -11,7 +13,18 @@ public class Projectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Destroy(gameObject, 2f);
         rb.AddForce(transform.up * speed, ForceMode2D.Impulse);  //Shoot
+    }
+
+    private void FixedUpdate()
+    {
+        
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Instantiate(explosion, explosionSpawn.transform.position, Quaternion.identity);
+        Destroy(gameObject);
     }
 
 }
