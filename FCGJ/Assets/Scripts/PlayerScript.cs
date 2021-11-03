@@ -6,10 +6,11 @@ public class PlayerScript : MonoBehaviour
 {
     //player variables
     public int health;
-    public float armor;
+    public int armor;
     public float firingSpeed;
     public float timeSinceLastShot;
-    public float invincibleTime; //time to ignore damage after hit
+    public int invincibleTime; //time to ignore damage after hit
+    public int curInvincibleTime;
     public float movementSpeed;
     public float hor, ver;
     public Vector2 mousePos;
@@ -19,6 +20,7 @@ public class PlayerScript : MonoBehaviour
     public Rigidbody2D rbGun;
     public CircleCollider2D circleCollider2D;
     public Animator animator;
+    private int helpInt = 0;
     
     //mechanics
     public bool gravity = true;
@@ -96,6 +98,7 @@ public class PlayerScript : MonoBehaviour
             {
                 rb.velocity = new Vector2(0f, 0f);
                 dodged = true;
+                animator.SetTrigger("dodge");
                 dodgeCurFrame = dodgeIFrames;
                 dodgeCooldownTime = dodgeCooldown;
             }
@@ -104,9 +107,9 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (health <= 0)
+        if (curInvincibleTime > 0)
         {
-            Kill();
+            curInvincibleTime--;
         }
 
 
@@ -150,7 +153,8 @@ public class PlayerScript : MonoBehaviour
         //dodge
         if (dodged)
         {
-
+            animator.SetFloat("moveHor", rb.velocity.x);
+            animator.SetFloat("moveVer", rb.velocity.y);
             --dodgeCurFrame;
             rb.AddForce(new Vector2(hor, ver) * dodgeRange, ForceMode2D.Impulse);
             gameObject.layer = 8;
@@ -180,13 +184,11 @@ public class PlayerScript : MonoBehaviour
             animator.SetFloat("moveHor", rb.velocity.x);
             animator.SetFloat("moveVer", rb.velocity.y);
 
-            animator.SetBool("damage", true);
             --enemyKnockbackFrames;
             rb.AddForce((transform.position - knockBackPos) * knockbackForce, ForceMode2D.Impulse);
 
             if (enemyKnockbackFrames == 0)
             {
-                animator.SetBool("damage", false);
                 enemyKnockback = false;
             }
         }
@@ -196,12 +198,12 @@ public class PlayerScript : MonoBehaviour
     {
         if (collision.gameObject.tag == "EnemyProjectile")
         {
-            
+            animator.SetTrigger("damage");
             knockbackForce = collision.gameObject.GetComponent<EnemyProjectile>().knockback;
             knockBackPos = collision.gameObject.transform.position;
             enemyKnockback = true;
             enemyKnockbackFrames = 8;
-            health--;
+            TakeDamage();
         }
     }
 
@@ -212,7 +214,7 @@ public class PlayerScript : MonoBehaviour
         if (!gravity)
         {
             knockbackTriggered = true;
-            knockbackForce = spawnedProjectile.GetComponent<Projectile>().knockback;
+            knockbackForce = spawnedProjectile.GetComponent<Projectile>().knockback / 2;
             knockBackPos = spawnedProjectile.transform.position;
         }
     }
@@ -220,5 +222,29 @@ public class PlayerScript : MonoBehaviour
     void Kill()
     {
         Destroy(gameObject);
+    }
+
+    public void TakeDamage()
+    {
+        if (curInvincibleTime < 0)
+        {
+            curInvincibleTime = invincibleTime;
+        }
+        if (curInvincibleTime == 0)
+        {
+            if (armor != 0)
+            {
+                --armor;
+            }
+            if (armor == 0)
+            {
+                --health;
+            }
+
+        }
+            if (health == 0)
+            {
+                Kill();
+            }
     }
 }

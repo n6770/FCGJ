@@ -80,7 +80,7 @@ public class EnemyScript : MonoBehaviour
     {
         if (collision.gameObject.tag == ("Player"))
         {
-            --playerScript.health;
+            playerScript.TakeDamage();
             playerScript.enemyKnockbackFrames = knockbackFrames;
             playerScript.knockbackForce = knockbackForce;
             playerScript.knockBackPos = transform.position;
