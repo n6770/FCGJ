@@ -23,8 +23,11 @@ public class Projectile : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Instantiate(explosion, explosionSpawn.transform.position, Quaternion.identity);
-        Destroy(gameObject);
+        if (collision.gameObject.tag != "Player")
+        {
+            Instantiate(explosion, explosionSpawn.transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
     }
 
 }

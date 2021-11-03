@@ -7,6 +7,8 @@ public class PlayerScript : MonoBehaviour
     //player variables
     public int health;
     public float armor;
+    public float firingSpeed;
+    public float timeSinceLastShot;
     public float invincibleTime; //time to ignore damage after hit
     public float movementSpeed;
     public float hor, ver;
@@ -14,6 +16,9 @@ public class PlayerScript : MonoBehaviour
     public GameObject gunPos;
     public GameObject projectile;
     public Rigidbody2D rb;
+    public Rigidbody2D rbGun;
+    public CircleCollider2D circleCollider2D;
+    public Animator animator;
     
     //mechanics
     public bool gravity = true;
@@ -41,10 +46,13 @@ public class PlayerScript : MonoBehaviour
     
     void Start()
     {
+
     }
 
     private void Update()
     {
+
+        
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         hor = Input.GetAxis("Horizontal");
         ver = Input.GetAxis("Vertical");
@@ -57,18 +65,28 @@ public class PlayerScript : MonoBehaviour
             rb.velocity = newSpeed;
         }
 
+        if (firingSpeed > 0f)
+        {
+            timeSinceLastShot = timeSinceLastShot + Time.deltaTime;
+        }
+
         if (shooting)
         {
-            if (Input.GetButtonDown("Fire1"))   //shooting
+            animator.SetBool("gun", true);
+            if (Input.GetButton("Fire1") && timeSinceLastShot > firingSpeed)   //shooting
             {
-                GameObject spawnedProjectile = Instantiate(projectile, gunPos.transform.position, gunPos.transform.rotation);
-                if (!gravity)
-                {
-                    knockbackTriggered = true;
-                    knockbackForce = spawnedProjectile.GetComponent<Projectile>().knockback;
-                    knockBackPos = spawnedProjectile.transform.position;
-                }
+                animator.SetBool("Movement", true);
+                Shoot();
             }
+
+            if (Input.GetButtonUp("Fire1"))
+            {
+                animator.SetBool("Movement", false);
+            }
+        }
+        if (!shooting)
+        {
+            animator.SetBool("gun", false);
         }
 
         //dodge
@@ -86,12 +104,29 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (health <= 0)
+        {
+            Kill();
+        }
+
 
         //rotate player towards mouse
         Vector2 lookDir = mousePos - rb.position;
         float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-        rb.rotation = angle;
+        rbGun.rotation = angle;
+        rbGun.position = transform.position;
 
+        animator.SetFloat("hor", lookDir.x);
+        animator.SetFloat("ver", lookDir.y);
+
+        if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f)
+        {
+            animator.SetBool("Movement", true);
+        }
+        else
+        {
+            animator.SetBool("Movement", false);
+        }
 
         //movement
         if ((movement && !dodged && !enemyKnockback))
@@ -115,12 +150,14 @@ public class PlayerScript : MonoBehaviour
         //dodge
         if (dodged)
         {
+
             --dodgeCurFrame;
             rb.AddForce(new Vector2(hor, ver) * dodgeRange, ForceMode2D.Impulse);
-
+            gameObject.layer = 8;
             if (dodgeCurFrame == 0)
             {
                 dodged = false;
+                gameObject.layer = 0;
             }
         }
         
@@ -139,14 +176,49 @@ public class PlayerScript : MonoBehaviour
 
         if (enemyKnockback)
         {
-            
+
+            animator.SetFloat("moveHor", rb.velocity.x);
+            animator.SetFloat("moveVer", rb.velocity.y);
+
+            animator.SetBool("damage", true);
             --enemyKnockbackFrames;
             rb.AddForce((transform.position - knockBackPos) * knockbackForce, ForceMode2D.Impulse);
 
             if (enemyKnockbackFrames == 0)
             {
+                animator.SetBool("damage", false);
                 enemyKnockback = false;
             }
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "EnemyProjectile")
+        {
+            
+            knockbackForce = collision.gameObject.GetComponent<EnemyProjectile>().knockback;
+            knockBackPos = collision.gameObject.transform.position;
+            enemyKnockback = true;
+            enemyKnockbackFrames = 8;
+            health--;
+        }
+    }
+
+    void Shoot()
+    {
+        timeSinceLastShot = 0f;
+        GameObject spawnedProjectile = Instantiate(projectile, gunPos.transform.position, gunPos.transform.rotation);
+        if (!gravity)
+        {
+            knockbackTriggered = true;
+            knockbackForce = spawnedProjectile.GetComponent<Projectile>().knockback;
+            knockBackPos = spawnedProjectile.transform.position;
+        }
+    }
+
+    void Kill()
+    {
+        Destroy(gameObject);
     }
 }
