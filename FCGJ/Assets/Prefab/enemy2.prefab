@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1708754288217604313}
   - component: {fileID: 1708754288217604318}
   - component: {fileID: 7292061594355374083}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: enemy2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -106,8 +106,10 @@ MonoBehaviour:
   readyToShoot: 0
   projectile: {fileID: 195530334718220863, guid: da098c892fe2349f495ef2916efb1a66, type: 3}
   animator: {fileID: 0}
-  heart: {fileID: 4398912908645589440, guid: c9ae0213811984effa2b46cc8ac24857, type: 3}
-  knockbackForce: 20
+  heart: {fileID: 3573920167096977645, guid: 3c062b0c3deab9c4aa03cd77175a876f, type: 3}
+  deathParticles: {fileID: 4946378968765910908, guid: fda913e29bec7034c87ddddcb1ca100a, type: 3}
+  soundManager: {fileID: 0}
+  knockbackForce: 40
   knockbackFrames: 8
   player: {fileID: 0}
   playerScript: {fileID: 0}
@@ -180,6 +182,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1708754288507154906}
   - component: {fileID: 1708754288507154907}
+  - component: {fileID: 7942771861161202042}
   m_Layer: 0
   m_Name: enemyGraphics
   m_TagString: Enemy
@@ -252,6 +255,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!58 &7942771861161202042
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708754288507154905}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.2
 --- !u!1 &7426411681399544863
 GameObject:
   m_ObjectHideFlags: 0

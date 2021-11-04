@@ -5,11 +5,13 @@ using UnityEngine;
 public class HeartScript : MonoBehaviour
 {
     public PlayerScript playerScript;
+    public SoundManager soundManager;
 
     // Start is called before the first frame update
     void Start()
     {
         playerScript = FindObjectOfType<PlayerScript>();
+        soundManager = FindObjectOfType<SoundManager>();
         Destroy(gameObject, 10f);
     }
 
@@ -19,12 +21,13 @@ public class HeartScript : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "player")
+        if (collision.gameObject.tag == "Player")
         {
-            if (playerScript.health != 3 )
+            if (playerScript.health < 3 )
             {
+                soundManager.PlayFX(5, 1f);
                 playerScript.health++;
                 Destroy(gameObject);
             }

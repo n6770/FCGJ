@@ -21,6 +21,8 @@ public class EnemyScript : MonoBehaviour
     public GameObject projectile;
     public Animator animator;
     public GameObject heart;
+    public GameObject deathParticles;
+    public SoundManager soundManager;
 
     public float knockbackForce;
     public int knockbackFrames;
@@ -42,6 +44,7 @@ public class EnemyScript : MonoBehaviour
         playerRb = player.GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         InvokeRepeating("CheckRange", 1f, 0.5f);
+        soundManager = FindObjectOfType<SoundManager>();
     }
 
     // Update is called once per frame
@@ -120,6 +123,7 @@ public class EnemyScript : MonoBehaviour
 
     void Shoot()
     {
+        soundManager.PlayFX(6, 0.2f);
         Instantiate(projectile, gunPos.transform.position, gunPos.transform.rotation);
         timeSinceShot = reloadTime;
         readyToShoot = false;
@@ -127,12 +131,14 @@ public class EnemyScript : MonoBehaviour
 
     void Kill()
     {
+        soundManager.PlayFX(3, 0.2f);
         float heartRandom = Random.Range(0f, 1f);
-        if (heartRandom < 0.05f)
+        if (heartRandom < 0.1f)
         {
-            Instantiate(heart, transform.position, Quaternion.identity);
+            Instantiate(heart, transform.position, heart.transform.rotation);
         }
 
+        Instantiate(deathParticles, transform.position, Quaternion.identity);
         gameManager.score += score;
         Destroy(gameObject);
     }

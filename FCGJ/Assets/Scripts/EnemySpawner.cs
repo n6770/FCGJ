@@ -11,6 +11,7 @@ public class EnemySpawner : MonoBehaviour
     public GameObject[] spawnpoints;
     public GameObject[] enemies;
     public GameObject player;
+    public SoundManager soundManager;
 
     // Start is called before the first frame update
     void Start()
@@ -30,11 +31,22 @@ public class EnemySpawner : MonoBehaviour
 
             if (rand < spawnMultiplier)
             {
+                if (spawnMultiplier > 1f)
+                {
+                    SpawnEnemy();
+                }
                 SpawnEnemy();
                 spawnMultiplier += increaseMultiplier;
             }
 
             
+        }
+
+        if (timeElapsed >= 4f)
+        {
+            timeElapsed = 0f;
+            SpawnEnemy();
+            spawnMultiplier += increaseMultiplier;
         }
     }
 
@@ -46,7 +58,7 @@ public class EnemySpawner : MonoBehaviour
         GameObject spawnPointGo = spawnpoints[spawnPoint];
         
 
-        if (Vector3.Distance(spawnPointGo.transform.position, player.transform.position) < 5f)
+        if (Vector3.Distance(spawnPointGo.transform.position, player.transform.position) < 8f)
         {
             SpawnEnemy();
             return;

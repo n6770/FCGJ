@@ -11,12 +11,18 @@ public class GameManager : MonoBehaviour
     public Text malfunctionText;
     public Image malfunctionSprite;
     public Animator malfunctionAnimator;
+    public GameObject pauseText;
+    public bool paused = false;
+
+    public Animator retryPanel;
+    public GameObject inGameUI;
+    public SoundManager soundManager;
+    public ScoreManager scoreManager;
     
 
     public int score = 0;
-    public int highScore = 0;
     public Text scoreText;
-    public Text highScoreText;
+    public Text endScore;
 
     public GameObject enemySpawner;
     public bool gameActive = true;
@@ -48,8 +54,10 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = FindObjectOfType<SoundManager>();
         malfunctionTimer = malfunctionTime;
         playerScript = FindObjectOfType<PlayerScript>();
+        scoreManager = FindObjectOfType<ScoreManager>();
         
     }
 
@@ -62,6 +70,19 @@ public class GameManager : MonoBehaviour
         //health & armor
         health = playerScript.health;
         armor = playerScript.armor;
+
+
+        //pause
+        if (Input.GetButtonDown("Cancel"))
+        {
+            TogglePause();
+        }
+
+        //quit
+        if (paused && Input.GetKeyDown(KeyCode.Q))
+        {
+            Application.Quit();
+        }
 
         //ui update
         if (health == 3)
@@ -129,7 +150,8 @@ public class GameManager : MonoBehaviour
 
     void NewMalfunction()
     {
-        int random = Random.Range(0, 4);
+        soundManager.PlayFX(1, 1f);
+        int random = Random.Range(0, 9);
         if (random == lastRandom)
         {
             NewMalfunction();
@@ -146,6 +168,9 @@ public class GameManager : MonoBehaviour
             playerScript.movement = true;
             playerScript.dodge = true;
             playerScript.shooting = true;
+            playerScript.multishot = true;
+            playerScript.firingSpeed = 0.18f;
+            playerScript.movementSpeed = 5f;
             malfunctionSprite.sprite = gravitySprite;
             malfunctionText.text = "gravity disabled";
         }
@@ -156,9 +181,12 @@ public class GameManager : MonoBehaviour
             playerScript.movement = false;
             playerScript.dodge = true;
             playerScript.shooting = true;
+            playerScript.multishot = true;
+            playerScript.firingSpeed = 0.18f;
+            playerScript.movementSpeed = 5f;
             malfunctionSprite.sprite = movementSprite;
             malfunctionText.text = "movement disabled";
-            malfunctionTime = 10f;
+            malfunctionTimer = 5f;
         }
         else if (random == 2)
         {
@@ -167,6 +195,9 @@ public class GameManager : MonoBehaviour
             playerScript.movement = true;
             playerScript.dodge = false;
             playerScript.shooting = true;
+            playerScript.multishot = true;
+            playerScript.firingSpeed = 0.18f;
+            playerScript.movementSpeed = 5f;
             malfunctionSprite.sprite = dashSprite;
             malfunctionText.text = "dash disabled";
         }
@@ -177,9 +208,82 @@ public class GameManager : MonoBehaviour
             playerScript.movement = true;
             playerScript.dodge = true;
             playerScript.shooting = false;
+            playerScript.multishot = true;
+            playerScript.firingSpeed = 0.18f; 
+            playerScript.movementSpeed = 5f;
             malfunctionSprite.sprite = weaponsSprite;
             malfunctionText.text = "weapons disabled";
-            malfunctionTime = 10f;
+            malfunctionTimer = 5f;
+        }
+        else if (random == 4)
+        {
+            //multishot
+            playerScript.gravity = true;
+            playerScript.movement = true;
+            playerScript.dodge = true;
+            playerScript.shooting = true;
+            playerScript.multishot = false;
+            playerScript.firingSpeed = 0.18f;
+            playerScript.movementSpeed = 5f;
+            malfunctionSprite.sprite = weaponsSprite;
+            malfunctionText.text = "multishot gained";
+            malfunctionTimer = 10f;
+        }
+        else if (random == 5)
+        {
+            //fire rate up
+            playerScript.gravity = true;
+            playerScript.movement = true;
+            playerScript.dodge = true;
+            playerScript.shooting = true;
+            playerScript.multishot = true;
+            playerScript.firingSpeed = 0.1f;
+            playerScript.movementSpeed = 5f;
+            malfunctionSprite.sprite = weaponsSprite;
+            malfunctionText.text = "fire rate up";
+            malfunctionTimer = 10f;
+        }
+        else if (random == 6)
+        {
+            //fire rate down
+            playerScript.gravity = true;
+            playerScript.movement = true;
+            playerScript.dodge = true;
+            playerScript.shooting = true;
+            playerScript.multishot = true;
+            playerScript.firingSpeed = 0.3f;
+            playerScript.movementSpeed = 5f;
+            malfunctionSprite.sprite = weaponsSprite;
+            malfunctionText.text = "fire rate down";
+            malfunctionTimer = 10f;
+        }
+        else if (random == 7)
+        {
+            //speed down
+            playerScript.gravity = true;
+            playerScript.movement = true;
+            playerScript.dodge = true;
+            playerScript.shooting = true;
+            playerScript.multishot = true;
+            playerScript.firingSpeed = 0.18f;
+            playerScript.movementSpeed = 3f;
+            malfunctionSprite.sprite = weaponsSprite;
+            malfunctionText.text = "speed down";
+            malfunctionTimer = 10f;
+        }
+        else if (random == 8)
+        {
+            //speed up
+            playerScript.gravity = true;
+            playerScript.movement = true;
+            playerScript.dodge = true;
+            playerScript.shooting = true;
+            playerScript.multishot = true;
+            playerScript.firingSpeed = 0.18f;
+            playerScript.movementSpeed = 8f;
+            malfunctionSprite.sprite = weaponsSprite;
+            malfunctionText.text = "speed up";
+            malfunctionTimer = 10f;
         }
 
         malfunctionAnimator.SetTrigger("showpanel");
@@ -187,27 +291,49 @@ public class GameManager : MonoBehaviour
 
     void CountScore()
     {
-        if (score > highScore)
+        if (score > PlayerPrefs.GetInt("highscore"))
         {
-            highScore = score;
+            PlayerPrefs.SetInt("highscore", score);
         }
     }
 
     public void PlayerKilled()
     {
-        enemySpawner.SetActive(false);
+        CountScore();
+        soundManager.PlayFX(4, 1f);
+        endScore.text = "final score: " + score + "\n high score: " + PlayerPrefs.GetInt("highscore");
+        inGameUI.SetActive(false);
+        retryPanel.SetTrigger("next");
         Time.timeScale = 0f;
+        enemySpawner.SetActive(false);
+        
         //retry panel esiin
     }
 
-    void RetryLevel()
+    public void RetryLevel()
     {
-        //kesken
-        SceneManager.LoadScene(0);
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(1);
     }
 
-    void MainMenu()
+    public void MainMenu()
     {
+        Time.timeScale = 1f;
+        Application.Quit();
+    }
 
+    public void TogglePause()
+    {
+        paused = !paused;
+        if (paused)
+        {
+            pauseText.SetActive(true);
+            Time.timeScale = 0f;
+        }
+        if (!paused)
+        {
+            pauseText.SetActive(false);
+            Time.timeScale = 1f;
+        }
     }
 }

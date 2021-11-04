@@ -25,7 +25,7 @@ public class EnemyProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag != "Enemy")
+        if (collision.gameObject.tag != "Enemy" && collision.gameObject.tag != "Pickup")
         {
 
             Instantiate(explosion, explosionSpawn.transform.position, Quaternion.identity);

@@ -15,12 +15,17 @@ public class PlayerScript : MonoBehaviour
     public float hor, ver;
     public Vector2 mousePos;
     public GameObject gunPos;
+    public GameObject multiShotPos1;
+    public GameObject multiShotPos2;
     public GameObject projectile;
     public Rigidbody2D rb;
     public Rigidbody2D rbGun;
     public CircleCollider2D circleCollider2D;
     public Animator animator;
     public GameManager gameManager;
+    public TrailRenderer trail;
+    public SoundManager soundManager;
+    public GameObject deathParticles;
         
     //mechanics
     public bool gravity = true;
@@ -28,6 +33,7 @@ public class PlayerScript : MonoBehaviour
     public bool dodge = true;
     public bool shooting = true;
     public bool armored = true;
+    public bool multishot = false;
 
     //dodge variables
     public bool dodged = false;
@@ -96,6 +102,7 @@ public class PlayerScript : MonoBehaviour
         {
             if (Input.GetButtonDown("Jump") && dodgeCooldownTime == 0 && (hor != 0f || ver != 0f))
             {
+                soundManager.PlayFX(7, 0.2f);
                 rb.velocity = new Vector2(0f, 0f);
                 dodged = true;
                 animator.SetTrigger("dodge");
@@ -126,6 +133,10 @@ public class PlayerScript : MonoBehaviour
         {
             animator.SetBool("Movement", true);
         }
+        else if (Input.GetButton("Fire1"))
+        {
+            animator.SetBool("Movement", true);
+        }
         else
         {
             animator.SetBool("Movement", false);
@@ -153,6 +164,7 @@ public class PlayerScript : MonoBehaviour
         //dodge
         if (dodged)
         {
+            trail.emitting = true;
             animator.SetFloat("moveHor", rb.velocity.x);
             animator.SetFloat("moveVer", rb.velocity.y);
             --dodgeCurFrame;
@@ -160,6 +172,7 @@ public class PlayerScript : MonoBehaviour
             gameObject.layer = 8;
             if (dodgeCurFrame == 0)
             {
+                trail.emitting = false;
                 dodged = false;
                 gameObject.layer = 0;
             }
@@ -209,36 +222,42 @@ public class PlayerScript : MonoBehaviour
 
     void Shoot()
     {
+        soundManager.PlayFX(0, 0.6f);
         timeSinceLastShot = 0f;
         GameObject spawnedProjectile = Instantiate(projectile, gunPos.transform.position, gunPos.transform.rotation);
+        if (!multishot)
+        {
+            Instantiate(projectile, multiShotPos1.transform.position, multiShotPos1.transform.rotation);
+            Instantiate(projectile, multiShotPos2.transform.position, multiShotPos2.transform.rotation);
+        }
         if (!gravity)
         {
             knockbackTriggered = true;
-            knockbackForce = spawnedProjectile.GetComponent<Projectile>().knockback / 2;
+            knockbackForce = spawnedProjectile.GetComponent<Projectile>().knockback / 3;
             knockBackPos = spawnedProjectile.transform.position;
         }
     }
 
     void Kill()
     {
+        Instantiate(deathParticles, transform.position, Quaternion.identity);
         gameManager.PlayerKilled();
         Destroy(gameObject);
     }
 
     public void TakeDamage()
     {
-        if (curInvincibleTime < 0)
-        {
-            curInvincibleTime = invincibleTime;
-        }
+        
         if (curInvincibleTime == 0)
         {
             if (armor != 0)
             {
+                curInvincibleTime = invincibleTime;
                 --armor;
             }
             if (armor == 0)
             {
+                curInvincibleTime = invincibleTime;
                 --health;
             }
 
