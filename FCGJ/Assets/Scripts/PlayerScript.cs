@@ -20,8 +20,8 @@ public class PlayerScript : MonoBehaviour
     public Rigidbody2D rbGun;
     public CircleCollider2D circleCollider2D;
     public Animator animator;
-    private int helpInt = 0;
-    
+    public GameManager gameManager;
+        
     //mechanics
     public bool gravity = true;
     public bool movement = true;
@@ -221,6 +221,7 @@ public class PlayerScript : MonoBehaviour
 
     void Kill()
     {
+        gameManager.PlayerKilled();
         Destroy(gameObject);
     }
 

@@ -132,9 +132,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 3
   armor: 3
-  firingSpeed: 0.25
+  firingSpeed: 0.18
   timeSinceLastShot: 0
   invincibleTime: 12
+  curInvincibleTime: 0
   movementSpeed: 5
   hor: 0
   ver: 0

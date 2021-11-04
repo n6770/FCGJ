@@ -8,7 +8,9 @@ public class EnemyScript : MonoBehaviour
     //enemy variables
     public int health;
     public float speed;
+    public int score;
 
+    public GameManager gameManager;
     public GameObject gunPos;
     public Rigidbody2D rbGunPos;
     public float shootRange;
@@ -18,6 +20,7 @@ public class EnemyScript : MonoBehaviour
     public bool readyToShoot;
     public GameObject projectile;
     public Animator animator;
+    public GameObject heart;
 
     public float knockbackForce;
     public int knockbackFrames;
@@ -33,6 +36,7 @@ public class EnemyScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
         player = GameObject.FindGameObjectWithTag("Player");
         playerScript = player.GetComponent<PlayerScript>();
         playerRb = player.GetComponent<Rigidbody2D>();
@@ -123,6 +127,13 @@ public class EnemyScript : MonoBehaviour
 
     void Kill()
     {
+        float heartRandom = Random.Range(0f, 1f);
+        if (heartRandom < 0.05f)
+        {
+            Instantiate(heart, transform.position, Quaternion.identity);
+        }
+
+        gameManager.score += score;
         Destroy(gameObject);
     }
 }

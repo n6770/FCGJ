@@ -93,8 +93,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7677545beb487a1458374f9a0f620eb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 2
+  health: 1
   speed: 4
+  score: 2
+  gameManager: {fileID: 0}
   gunPos: {fileID: 7426411681399544863}
   rbGunPos: {fileID: 832715895}
   shootRange: 10
@@ -104,6 +106,7 @@ MonoBehaviour:
   readyToShoot: 0
   projectile: {fileID: 195530334718220863, guid: da098c892fe2349f495ef2916efb1a66, type: 3}
   animator: {fileID: 0}
+  heart: {fileID: 4398912908645589440, guid: c9ae0213811984effa2b46cc8ac24857, type: 3}
   knockbackForce: 20
   knockbackFrames: 8
   player: {fileID: 0}

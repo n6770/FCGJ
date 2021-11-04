@@ -14,7 +14,7 @@ public class EnemyProjectile : MonoBehaviour
     void Start()
     {
         speed = speed * Random.Range(0.9f, 1.1f);
-        Destroy(gameObject, 2f);
+        Destroy(gameObject, 1f);
         rb.AddForce(transform.up * speed, ForceMode2D.Impulse);  //Shoot
     }
 
