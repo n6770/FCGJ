@@ -9,6 +9,7 @@ public class HeartScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerScript = FindObjectOfType<PlayerScript>();
         Destroy(gameObject, 10f);
     }
 
@@ -22,7 +23,7 @@ public class HeartScript : MonoBehaviour
     {
         if (collision.gameObject.tag == "player")
         {
-            if (playerScript.health <= 2 )
+            if (playerScript.health != 3 )
             {
                 playerScript.health++;
                 Destroy(gameObject);
