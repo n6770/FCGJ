@@ -269,11 +269,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7467248d0f8c1174e98e90033d5bde14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 2
+  health: 3
   armor: 3
   firingSpeed: 0.18
+  firingSpeedMultiplier: 1
   timeSinceLastShot: 0
-  invincibleTime: 12
+  invincibleTime: 45
   curInvincibleTime: 0
   movementSpeed: 5
   hor: 0
@@ -296,12 +297,12 @@ MonoBehaviour:
   dodge: 1
   shooting: 1
   armored: 1
-  multishot: 0
+  multishot: 1
   dodged: 0
-  dodgeRange: 40
+  dodgeRange: 20
   dodgeCooldown: 60
   dodgeCooldownTime: 0
-  dodgeIFrames: 20
+  dodgeIFrames: 30
   dodgeCurFrame: 0
   knockbackTriggered: 0
   knockbackForce: 0

@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 095a705a138a15f4a8a427476ab5b3d3, type: 3}
+  m_Name: PelletGun
+  m_EditorClassIdentifier: 
+  firingSpeedMultiplier: 1
+  projectile: {fileID: 5427494315569991121, guid: 8db185c4ed7d2154785e07d37dc8776f, type: 3}

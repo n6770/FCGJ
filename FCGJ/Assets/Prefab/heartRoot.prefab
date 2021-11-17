@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1422453356569917378}
   - component: {fileID: 3160276366309728423}
   - component: {fileID: 347593928060761042}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: heartCollectible
   m_TagString: Pickup
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6074158999291043225}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: heartRoot
   m_TagString: Pickup
   m_Icon: {fileID: 0}
